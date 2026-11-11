@@ -122,3 +122,19 @@
 - Спосіб перевірки: python -m pytest -q (55 passed), python -m ruff check app tests --select E4,E7,E9,F,I; перед передачею модель перевіряла схеми у власному середовищі, але підсумок підтверджено моїм запуском
 - Ризикове місце: порядок перевірок. Схеми не гарантують «не знайдено» → «конфлікт» → «валідація»; це має забезпечити сервіс, який викликає схему після перевірки заявки (architecture.md, розділ 2)
 - Артефакт: коміт «Add input schemas and validation helpers»
+
+## AI-05 (ЛР2, Крок 5: зріз A, POST /issues, GET /issues, GET /issues/{id})
+
+- Лабораторна, дата: ЛР2, 11.11.2026
+- Учасник: Курінна Дар'я
+- Інструмент, режим, модель: Claude (чат на claude.ai, новий чат), модель Claude Sonnet 5.5; Skill tracker-slice v0 застосовано вручну (чат без підтримки Skills: SKILL.md і розділ A зі slices.md передано текстом)
+- Мета: реалізація зрізу A за процедурою Skill
+- Передано: SKILL.md, розділ A зі slices.md, повні тексти api-contract.md, requirements.md і architecture.md, код database.py, main.py, schemas.py, conftest.py; описи T01, T02, T03, T13 (за запитом агента)
+- Ключовий запит: «Використай Skill tracker-slice для зрізу A… Не пиши код, поки я не підтверджу план»
+- Процедура Skill: агент назвав зріз, прочитані розділи, перевірки й план, запитав дозвіл на правку main.py і уточнення щодо T-номерів та фільтрів; код написав після мого підтвердження
+- Отримано: app/service.py, app/routes.py, tests/test_issues.py; зміни в app/database.py і app/main.py
+- Перевірка AI-draft: pytest 86 passed, ruff без зауважень, спроб виправлення 0; тести й ruff запускала я, агент їх не запускав
+- AI-draft: коміт da28a36, тег lab02-ai-draft
+- Рев'ю: прийнято без змін service.py, routes.py, main.py; у database.py f-рядки в SQL дали 2 попередження bandit (B608, Medium); дані користувача в них не потрапляють, але рядки замінено на повні SQL-константи; після виправлення bandit чистий, 86 passed
+- Спостереження для Skill: main.py не входить до дозволених файлів зрізу A у slices.md; Skill посилається на T-xx без описів (агент попросив їх окремо)
+- Артефакти: коміт «Review fix: remove f-string SQL (bandit B608)»
