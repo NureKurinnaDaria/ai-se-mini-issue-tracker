@@ -30,6 +30,10 @@ CREATE TABLE IF NOT EXISTS comments (
 
 USERS = [(1, "Agent A"), (2, "Agent B")]
 
+_ISSUE_COLUMNS = (
+    "id, title, description, status, priority, assignee_id, created_at"
+)
+
 
 def connect(db_path):
     conn = sqlite3.connect(db_path)
@@ -49,3 +53,31 @@ def init_db(db_path):
             )
     finally:
         conn.close()
+
+
+def insert_issue(conn, title, description, priority, created_at):
+    """Зберігає нову заявку (статус OPEN, без виконавця) і повертає її id."""
+    with conn:
+        cur = conn.execute(
+            "INSERT INTO issues"
+            " (title, description, status, priority, assignee_id, created_at)"
+            " VALUES (?, ?, 'OPEN', ?, NULL, ?)",
+            (title, description, priority, created_at),
+        )
+    return cur.lastrowid
+
+
+def get_issue(conn, issue_id):
+    """Повертає заявку як dict або None."""
+    row = conn.execute(
+        f"SELECT {_ISSUE_COLUMNS} FROM issues WHERE id = ?", (issue_id,)
+    ).fetchone()
+    return dict(row) if row else None
+
+
+def list_issues(conn):
+    """Усі заявки: created_at за зростанням, за однакового часу id (D-03)."""
+    rows = conn.execute(
+        f"SELECT {_ISSUE_COLUMNS} FROM issues ORDER BY created_at, id"
+    ).fetchall()
+    return [dict(r) for r in rows]
