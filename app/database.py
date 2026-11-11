@@ -30,8 +30,13 @@ CREATE TABLE IF NOT EXISTS comments (
 
 USERS = [(1, "Agent A"), (2, "Agent B")]
 
-_ISSUE_COLUMNS = (
-    "id, title, description, status, priority, assignee_id, created_at"
+_GET_ISSUE_SQL = (
+    "SELECT id, title, description, status, priority, assignee_id, created_at"
+    " FROM issues WHERE id = ?"
+)
+_LIST_ISSUES_SQL = (
+    "SELECT id, title, description, status, priority, assignee_id, created_at"
+    " FROM issues ORDER BY created_at, id"
 )
 
 
@@ -70,7 +75,7 @@ def insert_issue(conn, title, description, priority, created_at):
 def get_issue(conn, issue_id):
     """Повертає заявку як dict або None."""
     row = conn.execute(
-        f"SELECT {_ISSUE_COLUMNS} FROM issues WHERE id = ?", (issue_id,)
+        _GET_ISSUE_SQL, (issue_id,)
     ).fetchone()
     return dict(row) if row else None
 
@@ -78,6 +83,6 @@ def get_issue(conn, issue_id):
 def list_issues(conn):
     """Усі заявки: created_at за зростанням, за однакового часу id (D-03)."""
     rows = conn.execute(
-        f"SELECT {_ISSUE_COLUMNS} FROM issues ORDER BY created_at, id"
+        _LIST_ISSUES_SQL
     ).fetchall()
     return [dict(r) for r in rows]
