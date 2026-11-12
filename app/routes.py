@@ -1,10 +1,10 @@
-"""HTTP-шар зрізів A і B: маршрути перетворюють результати сервісу на відповіді."""
+"""HTTP-шар зрізів A, B і C: маршрути перетворюють результати сервісу на відповіді."""
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
 from app import service
-from app.schemas import ApiValidationError, IssueOut
+from app.schemas import ApiValidationError, CommentOut, IssueOut
 
 router = APIRouter()
 
@@ -86,4 +86,22 @@ async def change_status(issue_id: str, request: Request):
     data = await _read_json(request)
     return _respond(
         lambda: service.change_status(request.app.state.db_path, issue_id, data)
+    )
+
+
+@router.post(
+    "/issues/{issue_id}/comments", status_code=201, response_model=CommentOut
+)
+async def create_comment(issue_id: str, request: Request):
+    # Сире тіло йде в сервіс: 404 має пріоритет над некоректним тілом.
+    data = await _read_json(request)
+    return _respond(
+        lambda: service.create_comment(request.app.state.db_path, issue_id, data)
+    )
+
+
+@router.get("/issues/{issue_id}/comments", response_model=list[CommentOut])
+def list_comments(issue_id: str, request: Request):
+    return _respond(
+        lambda: service.list_comments(request.app.state.db_path, issue_id)
     )

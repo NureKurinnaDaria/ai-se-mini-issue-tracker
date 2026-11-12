@@ -44,6 +44,18 @@ _UPDATE_ISSUE_SQL = (
     " WHERE id = ?"
 )
 _UPDATE_STATUS_SQL = "UPDATE issues SET status = ? WHERE id = ?"
+_INSERT_COMMENT_SQL = (
+    "INSERT INTO comments (issue_id, author_id, text, created_at)"
+    " VALUES (?, ?, ?, ?)"
+)
+_GET_COMMENT_SQL = (
+    "SELECT id, issue_id, author_id, text, created_at"
+    " FROM comments WHERE id = ?"
+)
+_LIST_COMMENTS_SQL = (
+    "SELECT id, issue_id, author_id, text, created_at"
+    " FROM comments WHERE issue_id = ? ORDER BY created_at, id"
+)
 
 
 def connect(db_path):
@@ -107,3 +119,24 @@ def update_status(conn, issue_id, status):
     """Записує новий статус заявки."""
     with conn:
         conn.execute(_UPDATE_STATUS_SQL, (status, issue_id))
+
+
+def insert_comment(conn, issue_id, author_id, text, created_at):
+    """Зберігає коментар до наявної заявки й повертає його id."""
+    with conn:
+        cur = conn.execute(
+            _INSERT_COMMENT_SQL, (issue_id, author_id, text, created_at)
+        )
+    return cur.lastrowid
+
+
+def get_comment(conn, comment_id):
+    """Повертає коментар як dict або None."""
+    row = conn.execute(_GET_COMMENT_SQL, (comment_id,)).fetchone()
+    return dict(row) if row else None
+
+
+def list_comments(conn, issue_id):
+    """Коментарі заявки: created_at за зростанням, за однакового часу id (D-03)."""
+    rows = conn.execute(_LIST_COMMENTS_SQL, (issue_id,)).fetchall()
+    return [dict(r) for r in rows]

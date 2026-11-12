@@ -1,4 +1,4 @@
-"""Бізнес-правила зрізів A і B: створення, читання, редагування, статуси."""
+"""Бізнес-правила зрізів A, B і C: заявки, статуси, коментарі."""
 
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from app import database
 from app.schemas import (
     ApiValidationError,
+    CommentCreate,
     IssueCreate,
     StatusChange,
     validate_body,
@@ -151,3 +152,29 @@ def change_status(db_path, raw_id, data):
             )
         database.update_status(conn, issue["id"], target)
         return database.get_issue(conn, issue["id"])
+
+
+def create_comment(db_path, raw_id, data):
+    """POST /issues/{id}/comments: 404 → 422 → створення.
+
+    Статус заявки не перевіряється: коментувати можна й закриту (AC-06.2).
+    """
+    with _connection(db_path) as conn:
+        issue = _load_issue(conn, raw_id)
+        _reject_invalid_json(data)
+        payload = validate_body(CommentCreate, data)
+        comment_id = database.insert_comment(
+            conn,
+            issue["id"],
+            payload.author_id,
+            payload.text,
+            _now(),
+        )
+        return database.get_comment(conn, comment_id)
+
+
+def list_comments(db_path, raw_id):
+    """GET /issues/{id}/comments: 404, якщо заявки немає; інакше список (може бути порожнім)."""
+    with _connection(db_path) as conn:
+        issue = _load_issue(conn, raw_id)
+        return database.list_comments(conn, issue["id"])
