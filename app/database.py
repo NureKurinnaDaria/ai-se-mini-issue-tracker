@@ -38,6 +38,12 @@ _LIST_ISSUES_SQL = (
     "SELECT id, title, description, status, priority, assignee_id, created_at"
     " FROM issues ORDER BY created_at, id"
 )
+_UPDATE_ISSUE_SQL = (
+    "UPDATE issues"
+    " SET title = ?, description = ?, priority = ?, assignee_id = ?"
+    " WHERE id = ?"
+)
+_UPDATE_STATUS_SQL = "UPDATE issues SET status = ? WHERE id = ?"
 
 
 def connect(db_path):
@@ -86,3 +92,18 @@ def list_issues(conn):
         _LIST_ISSUES_SQL
     ).fetchall()
     return [dict(r) for r in rows]
+
+
+def update_issue(conn, issue_id, title, description, priority, assignee_id):
+    """Записує всі редаговані поля одним UPDATE: одна транзакція, атомарно."""
+    with conn:
+        conn.execute(
+            _UPDATE_ISSUE_SQL,
+            (title, description, priority, assignee_id, issue_id),
+        )
+
+
+def update_status(conn, issue_id, status):
+    """Записує новий статус заявки."""
+    with conn:
+        conn.execute(_UPDATE_STATUS_SQL, (status, issue_id))
