@@ -5,7 +5,8 @@
 Критерії AC — у docs/requirements.md, розділ «Користувацькі історії та критерії приймання».
 
 ## A. Створення й читання
-- Код (app/): schemas.py, service.py, routes.py, database.py
+
+- Код (app/): schemas.py, service.py, routes.py, database.py; main.py (лише підключення маршрутизатора: app.include_router)
 - Тести (tests/): conftest.py, test_issues.py
 - Читати: docs/api-contract.md — 3.3 POST /issues, 3.5 GET /issues/{id}, 3.4 GET /issues (без фільтрів);
   docs/requirements.md — «Модель даних», «Впорядкування списків»
@@ -13,7 +14,8 @@
 - Сценарії: T01, T02, T03, T13
 
 ## B. Зміни й стани
-- Код (app/): schemas.py, service.py, routes.py
+
+- Код (app/): schemas.py, service.py, routes.py, database.py
 - Тести (tests/): test_issues.py
 - Читати: docs/api-contract.md — 3.6 PATCH /issues/{id}, 3.7 PATCH /issues/{id}/status;
   docs/requirements.md — «Життєвий цикл заявки» (матриця переходів, операції для закритої заявки),
@@ -22,7 +24,8 @@
 - Сценарії: T07, T08, T09, T10, T14
 
 ## C. Коментарі
-- Код (app/): schemas.py, service.py, routes.py
+
+- Код (app/): schemas.py, service.py, routes.py, database.py
 - Тести (tests/): test_comments.py
 - Читати: docs/api-contract.md — 3.8 POST і 3.9 GET /issues/{id}/comments;
   docs/requirements.md — «Сутність Comment», «Зв'язки», «Впорядкування списків»
@@ -30,6 +33,7 @@
 - Сценарії: T11, T12
 
 ## D. Фільтри
+
 - Код (app/): schemas.py, service.py, routes.py
 - Тести (tests/): test_issues.py
 - Читати: docs/api-contract.md — 3.4 GET /issues, параметри status і priority;
