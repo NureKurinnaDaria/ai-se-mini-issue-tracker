@@ -32,24 +32,11 @@
 
 Зростання набору тестів: каркас 3, схеми 55, зріз A 86, зріз B 142, зріз C 176, предикати 194, фільтри 214, довідник користувачів 219. Усі тести працюють на окремій тимчасовій SQLite-базі (`tmp_path`), `data/app.db` у тестах не використовується.
 
-| Сценарій | Тести (скорочено)                                                                                                                   |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| T01      | `test_t01_ac_01_1_*`                                                                                                                |
-| T02      | `test_t02_ac_01_2_ac_01_3_title_bounds_after_trim`, `test_t02_ac_01_3_*`                                                            |
-| T03      | `test_t03_*`                                                                                                                        |
-| T04      | `test_filters.py::test_t04_*`                                                                                                       |
-| T05      | `test_filters.py::test_t05_*`                                                                                                       |
-| T06      | `test_filters.py::test_t06_two_filters_return_intersection_not_union`                                                               |
-| T07      | `test_t07_*`                                                                                                                        |
-| T08      | `test_t08_*`                                                                                                                        |
-| T09      | `test_t09_*`                                                                                                                        |
-| T10      | `test_t10_*`                                                                                                                        |
-| T11      | `test_comments.py::test_create_comment_returns_201_and_appears_in_list`, `test_invalid_comment_text_gives_422_and_nothing_is_saved` |
-| T12      | `test_comments.py::test_comment_to_unknown_issue_gives_404`, `test_comment_to_closed_issue_is_allowed`                              |
-| T13      | `test_t13_ac_07_1_issue_survives_app_restart`                                                                                       |
-| T14      | `test_t14_*`                                                                                                                        |
+Відповідність сценаріїв T01–T14 і критеріїв приймання конкретним тестам — у `docs/traceability.csv`. Назви тестів T01–T10, T13, T14 містять номер сценарію (`test_t07_*`); T11–T12 лежать у `test_comments.py` без такого префікса (розділ 6).
 
 ## 3. Skill tracker-slice
+
+Усі звернення до AI описано в `docs/ai-log.md` (AI-03–AI-13 для ЛР2). Записи AI-11–AI-13 (підготовка Skill v0, крок 0, консультації з оформлення) додано ретроспективно 17.11.2026.
 
 ### 3.1. Результати кроку 0 (Skill v0)
 
@@ -152,3 +139,5 @@
 | Журнал і протокол експерименту      | `e1c75bd` |
 | `GET /users`                        | `dfe869e` |
 | `lab02-implemented`                 | `4032564` |
+
+Тег `lab02-implemented` стоїть на коміті, що передує коміту з підстановкою цього хешу (`b647e9a`, лише документація).
