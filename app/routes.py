@@ -4,7 +4,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
 from app import service
-from app.schemas import ApiValidationError, CommentOut, IssueOut
+from app.schemas import ApiValidationError, CommentOut, IssueOut, UserOut
 
 router = APIRouter()
 
@@ -40,6 +40,11 @@ def _respond(call):
         return _error(409, "conflict", str(exc))
     except ApiValidationError as exc:
         return _validation_error(exc.details)
+
+
+@router.get("/users", response_model=list[UserOut])
+def list_users(request: Request):
+    return service.list_users(request.app.state.db_path)
 
 
 @router.post("/issues", status_code=201, response_model=IssueOut)

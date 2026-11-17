@@ -87,6 +87,12 @@ def _reject_invalid_json(data):
         )
 
 
+def list_users(db_path):
+    """GET /users: довідник із двох користувачів (api-contract.md, 3.2)."""
+    with _connection(db_path) as conn:
+        return database.list_users(conn)
+
+
 def create_issue(db_path, data):
     payload = validate_body(IssueCreate, data)
     with _connection(db_path) as conn:

@@ -34,6 +34,9 @@ _GET_ISSUE_SQL = (
     "SELECT id, title, description, status, priority, assignee_id, created_at"
     " FROM issues WHERE id = ?"
 )
+_LIST_USERS_SQL = (
+    "SELECT id, name FROM users ORDER BY id"
+)
 _LIST_ISSUES_SQL = (
     "SELECT id, title, description, status, priority, assignee_id, created_at"
     " FROM issues ORDER BY created_at, id"
@@ -139,4 +142,10 @@ def get_comment(conn, comment_id):
 def list_comments(conn, issue_id):
     """Коментарі заявки: created_at за зростанням, за однакового часу id (D-03)."""
     rows = conn.execute(_LIST_COMMENTS_SQL, (issue_id,)).fetchall()
+    return [dict(r) for r in rows]
+
+
+def list_users(conn):
+    """Довідник користувачів за зростанням id."""
+    rows = conn.execute(_LIST_USERS_SQL).fetchall()
     return [dict(r) for r in rows]
