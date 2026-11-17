@@ -8,6 +8,7 @@ from app.schemas import (
     ApiValidationError,
     CommentCreate,
     IssueCreate,
+    IssueFilter,
     StatusChange,
     validate_body,
     validate_patch,
@@ -110,9 +111,21 @@ def get_issue(db_path, raw_id):
     return issue
 
 
-def list_issues(db_path):
+def list_issues(db_path, params=None):
+    """GET /issues: фільтри status і priority разом діють як AND (FR-02, D-09).
+
+    Некоректне значення фільтра дає помилку валідації, а не порожній список.
+    Порядок (created_at, id) задає сховище й не залежить від фільтрів (D-03).
+    """
+    flt = validate_body(IssueFilter, dict(params or {}))
     with _connection(db_path) as conn:
-        return database.list_issues(conn)
+        issues = database.list_issues(conn)
+    return [
+        issue
+        for issue in issues
+        if matches_status(issue, flt.status)
+        and matches_priority(issue, flt.priority)
+    ]
 
 
 def update_issue(db_path, raw_id, data):
@@ -178,3 +191,11 @@ def list_comments(db_path, raw_id):
     with _connection(db_path) as conn:
         issue = _load_issue(conn, raw_id)
         return database.list_comments(conn, issue["id"])
+
+
+def matches_status(issue, value):
+    return value is None or issue["status"] == value
+
+
+def matches_priority(issue, value):
+    return value is None or issue["priority"] == value

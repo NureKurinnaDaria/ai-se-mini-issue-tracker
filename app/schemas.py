@@ -56,6 +56,13 @@ class StatusChange(StrictInput):
     status: Status
 
 
+class IssueFilter(StrictInput):
+    """Параметри фільтра списку заявок (D-09): відсутній параметр не фільтрує."""
+
+    status: Status | None = None
+    priority: Priority | None = None
+    
+
 class CommentCreate(StrictInput):
     author_id: UserId
     text: CommentText

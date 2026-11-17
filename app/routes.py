@@ -58,9 +58,20 @@ async def create_issue(request: Request):
 
 
 @router.get("/issues", response_model=list[IssueOut])
-def list_issues(request: Request):
-    # Параметри status і priority у зрізі A не оголошені й ігноруються.
-    return service.list_issues(request.app.state.db_path)
+def list_issues(
+    request: Request, status: str | None = None, priority: str | None = None
+):
+    # Значення не перевіряються тут: форму й допустимі значення перевіряє
+    # сервіс (D-09). Параметри оголошено для документації; невідомі
+    # параметри запиту ігноруються (api-contract.md, 3.4).
+    params = {
+        name: value
+        for name, value in (("status", status), ("priority", priority))
+        if value is not None
+    }
+    return _respond(
+        lambda: service.list_issues(request.app.state.db_path, params)
+    )
 
 
 @router.get("/issues/{issue_id}", response_model=IssueOut)
