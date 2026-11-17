@@ -198,3 +198,13 @@
 - Перевірка: pytest 214 passed, ruff і bandit без зауважень; перевірки запускала я
 - Рішення: тести винесено в окремий файл tests/test_filters.py, бо вміст test_issues.py не передавався; фільтрація виконується в Python над списком із бази (дозволено методичкою для малого набору даних)
 - Артефакти: коміт «Slice D: filters with AND, D-09 validation, predicate tests» (db19ef7)
+
+## AI-10 (ЛР2, доповнення: GET /users)
+
+- Лабораторна, дата: ЛР2, 17.11.2026
+- Учасник: Курінна Дар'я
+- Інструмент, режим, модель: Claude (консультаційний чат на claude.ai), модель Claude Sonnet 5.5; Skill не застосовувався
+- Мета: закрити прогалину: маршрут GET /users (api-contract.md, 3.2) не входить до жодного зрізу A–D
+- Отримано: list_users у database.py, service.py і routes.py; tests/test_users.py (5 тестів)
+- Перевірка: pytest 219 passed, ruff і bandit без зауважень; перевірки запускала я
+- Артефакт: коміт «Add GET /users (api-contract 3.2)»
