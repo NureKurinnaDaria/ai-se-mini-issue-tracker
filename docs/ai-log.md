@@ -171,3 +171,30 @@
 - Спостереження для Skill: database.py не входить до дозволених файлів зрізів B і C (у зрізі A входить), а main.py не входив до зрізу A; bandit відсутній у перевірках Skill; агент не мав описів T-xx і тест AC-07.1 написав за моїм описом T13, не звіряючи з самим сценарієм
 - Відкрите: попередження StarletteDeprecationWarning про httpx лишено без змін (залежності за Skill не змінюються)
 - Артефакт: коміт «AI draft: slice C»
+
+## AI-08 (ЛР2, Крок 6: мікроексперимент, matches_priority)
+
+- Лабораторна, дата: ЛР2, 17.11.2026
+- Учасник: Курінна Дар'я
+- Інструмент, режим, модель: Claude (новий чат на claude.ai), модель Claude Sonnet 5.5; Skill tracker-slice v1 застосовано вручну (чат без підтримки Skills)
+- Мета: реалізація чистої функції matches_priority (зріз D, звужений до одного предиката)
+- Передано: SKILL.md, розділ D зі slices.md, api-contract.md, requirements.md, app/service.py, tests/test_predicates.py; контракт функції
+- Процедура Skill: агент назвав зріз, прочитані розділи, перевірки й план; код надано після підтвердження плану
+- Отримано: функція matches_priority в app/service.py (один рядок логіки)
+- Перевірка: перший запуск тестів виконано до внесення коду (0 з 9, AttributeError); після внесення pytest tests/test_predicates.py -k priority: 9 passed, повний набір 194 passed, ruff без зауважень; перевірки запускала я, агент їх не запускав
+- Прийнято: без змін, правок 0
+- Звернень до AI: 2
+- Примітка: спільні тести test_predicates.py підготовлено AI до початку вимірювань
+- Артефакт: docs/experiment-lr2.csv
+
+## AI-09 (ЛР2, Крок 6: інтеграція зрізу D, фільтри GET /issues)
+
+- Лабораторна, дата: ЛР2, 17.11.2026
+- Учасник: Курінна Дар'я
+- Інструмент, режим, модель: Claude (консультаційний чат на claude.ai), модель Claude Sonnet 5.5; Skill не застосовувався (бюджет агентних задач вичерпано, інтеграція виконана без агентного чату)
+- Мета: підключення предикатів matches_status і matches_priority до GET /issues, AND-фільтрація, помилка валідації для некоректного значення (D-09), тести T04–T06
+- Передано: api-contract.md (3.4), requirements.md, код service.py і routes.py, test_predicates.py
+- Отримано: схема IssueFilter, зміни в service.list_issues і routes.list_issues, tests/test_filters.py (20 тестів)
+- Перевірка: pytest 214 passed, ruff і bandit без зауважень; перевірки запускала я
+- Рішення: тести винесено в окремий файл tests/test_filters.py, бо вміст test_issues.py не передавався; фільтрація виконується в Python над списком із бази (дозволено методичкою для малого набору даних)
+- Артефакти: коміт «Slice D: filters with AND, D-09 validation, predicate tests» (db19ef7)
