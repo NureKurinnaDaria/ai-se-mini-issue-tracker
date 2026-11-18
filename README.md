@@ -11,7 +11,7 @@ GitHub repository: https://github.com/NureKurinnaDaria/ai-se-mini-issue-tracker
 Відеозахист ЛР1:
 https://drive.google.com/file/d/1RB_ghVUb4DY0W8fD-CxE4u5KGgz54iLX/view?usp=sharing
 
-Відеозахист ЛР2: <ПОСИЛАННЯ ЛР2>
+Відеозахист ЛР2: https://drive.google.com/file/d/1FjcNSw5ZuOOanSIb_yI7eVLDeKw0tWG2/view?usp=sharing
 
 ## Документація (папка `docs/`)
 
