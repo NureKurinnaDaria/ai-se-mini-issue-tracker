@@ -1,0 +1,78 @@
+﻿......FF........................                                         [100%]
+================================== FAILURES ===================================
+______________ test_patch_atomic_priority_with_unknown_assignee _______________
+
+client = <starlette.testclient.TestClient object at 0x000001BCD0B61590>
+
+    def test_patch_atomic_priority_with_unknown_assignee(client):
+        """
+        AC: якщо будь-яка передана зміна некоректна (assignee_id=999), PATCH дає
+        422 і жодна зі змін не зберігається.
+        Після повторного GET: priority == "medium", assignee_id == 1
+        (початкові значення), а не "high".
+        """
+>       issue = issue_in(client, "OPEN", priority="medium", assignee_id=1)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_lr3_ai.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x000001BCD0B61590>
+state = 'OPEN'
+body = {'priority': 'medium', 'assignee_id': 1, 'title': 'Помилка входу'}
+
+    def issue_in(client, state, **body):
+        """Створює заявку й переводить її у потрібний стан дозволеними переходами."""
+        body.setdefault("title", "Помилка входу")
+        issue = create(client, **body).json()
+        if state != "OPEN":
+            assert set_status(client, issue["id"], state).status_code == 200
+>       return client.get(f"/issues/{issue['id']}").json()
+                                     ^^^^^^^^^^^
+E       KeyError: 'id'
+
+tests\test_lr3_ai.py:25: KeyError
+__________ test_patch_atomic_title_description_with_unknown_assignee __________
+
+client = <starlette.testclient.TestClient object at 0x000001BCD0B62030>
+
+    def test_patch_atomic_title_description_with_unknown_assignee(client):
+        """
+        AC: атомарність PATCH для кількох полів: title і description не
+        зберігаються, якщо assignee_id некоректний.
+        Після повторного GET: title, description і assignee_id дорівнюють
+        початковим значенням.
+        """
+>       issue = issue_in(
+            client, "OPEN",
+            title="Початкова назва", description="Початковий опис", assignee_id=2,
+        )
+
+tests\test_lr3_ai.py:129: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x000001BCD0B62030>
+state = 'OPEN'
+body = {'title': 'Початкова назва', 'description': 'Початковий опис', 'assignee_id': 2}
+
+    def issue_in(client, state, **body):
+        """Створює заявку й переводить її у потрібний стан дозволеними переходами."""
+        body.setdefault("title", "Помилка входу")
+        issue = create(client, **body).json()
+        if state != "OPEN":
+            assert set_status(client, issue["id"], state).status_code == 200
+>       return client.get(f"/issues/{issue['id']}").json()
+                                     ^^^^^^^^^^^
+E       KeyError: 'id'
+
+tests\test_lr3_ai.py:25: KeyError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\User\Documents\ai-se-mini-issue-tracker\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_lr3_ai.py::test_patch_atomic_priority_with_unknown_assignee
+FAILED tests/test_lr3_ai.py::test_patch_atomic_title_description_with_unknown_assignee
+2 failed, 30 passed, 1 warning in 2.64s
