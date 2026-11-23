@@ -25,7 +25,7 @@ INVALID_JSON = object()
 _TRANSITIONS = {
     "OPEN": {"OPEN", "IN_PROGRESS", "CLOSED"},
     "IN_PROGRESS": {"IN_PROGRESS", "CLOSED"},
-    "CLOSED": {"CLOSED"},
+    "CLOSED": {"CLOSED", "OPEN"},
 }
 
 
