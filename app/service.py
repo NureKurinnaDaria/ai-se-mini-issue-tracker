@@ -135,12 +135,28 @@ def list_issues(db_path, params=None):
 
 
 def update_issue(db_path, raw_id, data):
-    """PATCH /issues/{id}: 404 → 409 → 422 → застосування змін (D-01, D-08)."""
+    """M2 (контрольований дефект): частина змін записується до перевірки виконавця."""
     with _connection(db_path) as conn:
         issue = _load_issue(conn, raw_id)
         if issue["status"] == "CLOSED":
             raise ConflictError("Заявка закрита, її дані не можна змінювати")
         _reject_invalid_json(data)
+        if isinstance(data, dict) and "assignee_id" in data:
+            rest = {k: v for k, v in data.items() if k != "assignee_id"}
+            if rest:
+                early = validate_patch(rest)
+                early_changes = {
+                    name: getattr(early, name) for name in early.model_fields_set
+                }
+                early_merged = {**issue, **early_changes}
+                database.update_issue(
+                    conn,
+                    issue["id"],
+                    early_merged["title"],
+                    early_merged["description"],
+                    early_merged["priority"],
+                    early_merged["assignee_id"],
+                )
         payload = validate_patch(data)
         # Змінюються лише передані поля; відсутнє поле відрізняється від null.
         changes = {name: getattr(payload, name) for name in payload.model_fields_set}
