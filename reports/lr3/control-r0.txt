@@ -1,19 +1,4 @@
-﻿python : C:\Users\User\Documents\ai-se-mini-issue-tracker\.ven
-v\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecat
-ionWarning: Using `httpx` with `starlette.testclient` is depre
-cated; install `httpx2` instead.
-At line:1 char:1
-+ python reports\lr3\control_check.py 2>&1 | Out-File -Encodin
-g utf8 re ...
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (C:\Users\User\D. 
-   ..ttpx2` instead.:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
-  from starlette.testclient import TestClient as TestClient  #
- noqa
-Traceback (most recent call last):
-  File "C:\Users\User\Documents\ai-se-mini-issue-tracker\repor
-ts\lr3\control_check.py", line 7, in <module>
-    from app.main import create_app
-ModuleNotFoundError: No module named 'app'
+﻿M1 CLOSED->OPEN: 409 | GET status: CLOSED
+M2 PATCH: 422 | priority medium -> medium | assignee 1 -> 1
+M3 'Save button' -> 201 | GET: 'Save button' | exact: True
+M3 "O'Brien" -> 201 | GET: "O'Brien" | exact: True
