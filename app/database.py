@@ -82,13 +82,13 @@ def init_db(db_path):
 
 
 def insert_issue(conn, title, description, priority, created_at):
-    """M3 (контрольований дефект): title вставляється в SQL форматуванням."""
+    """Зберігає нову заявку (статус OPEN, без виконавця) і повертає її id."""
     with conn:
         cur = conn.execute(
             "INSERT INTO issues"
             " (title, description, status, priority, assignee_id, created_at)"
-            f" VALUES ('{title}', ?, 'OPEN', ?, NULL, ?)",
-            (description, priority, created_at),
+            " VALUES (?, ?, 'OPEN', ?, NULL, ?)",
+            (title, description, priority, created_at),
         )
     return cur.lastrowid
 
