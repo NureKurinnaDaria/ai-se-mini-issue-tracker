@@ -1,0 +1,77 @@
+﻿F                                                                        [100%]
+================================== FAILURES ===================================
+_____ test_patch_description_and_assignee_together_preserves_other_fields _____
+
+client = <starlette.testclient.TestClient object at 0x00000284909BF380>
+
+    def test_patch_description_and_assignee_together_preserves_other_fields(client):
+        """
+        AC-03.1, AC-05.1. Одним PATCH змінюються description та assignee_id.
+        Інші поля заявки, включно зі службовими, повинні залишитися без змін.
+        """
+        # 1. Створення заявки (лише дозволені поля)
+        response = create(
+            client,
+            title="Initial title",
+            description="Initial description",
+            priority="medium",
+        )
+        assert response.status_code == 201
+    
+        issue_id = response.json()["id"]
+    
+        # 2. Призначення початкового виконавця окремим PATCH
+        assign_response = client.patch(
+            f"/issues/{issue_id}",
+            json={"assignee_id": 1},
+        )
+        assert assign_response.status_code == 200
+    
+        # 3. Збереження початкового стану
+        before = snapshot(client, issue_id)
+    
+        # Переконуємося, що початкові умови виконані
+        assert before["assignee_id"] == 1
+        assert before["status"] == "OPEN"
+    
+        # 4. Одночасне оновлення description та assignee_id
+        patch_response = client.patch(
+            f"/issues/{issue_id}",
+            json={
+                "description": "Updated description",
+                "assignee_id": 2,
+            },
+        )
+        assert patch_response.status_code == 200
+    
+        patch_body = patch_response.json()
+    
+        # 5. Повторне отримання заявки
+        after = snapshot(client, issue_id)
+    
+        # 6. Перевірка змінених полів
+        assert after["description"] == "Updated description"
+        assert after["assignee_id"] == 2
+    
+        # Перевірка тіла відповіді PATCH
+        assert patch_body["description"] == "Updated description"
+        assert patch_body["assignee_id"] == 2
+    
+        # 7. Перевірка незмінених основних полів
+        assert after["title"] == before["title"]
+>       assert after["priority"] == before["priority"]
+E       AssertionError: assert 'low' == 'medium'
+E         
+E         - medium
+E         + low
+
+tests\test_lr3_student.py:73: AssertionError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\User\Documents\ai-se-mini-issue-tracker\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_lr3_student.py::test_patch_description_and_assignee_together_preserves_other_fields
+1 failed, 1 warning in 0.38s
