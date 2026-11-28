@@ -13,6 +13,9 @@ https://drive.google.com/file/d/1RB_ghVUb4DY0W8fD-CxE4u5KGgz54iLX/view?usp=shari
 
 Відеозахист ЛР2: https://drive.google.com/file/d/1FjcNSw5ZuOOanSIb_yI7eVLDeKw0tWG2/view?usp=sharing
 
+Відеозахист ЛР3:
+https://drive.google.com/file/d/188t4fqJYNF1Qki4mC0iHOo9T47piRY9U/view?usp=sharing
+
 ## Документація (папка `docs/`)
 
 | Файл                                          | Зміст                                                                       |
